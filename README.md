@@ -6,7 +6,7 @@ Plugin to manage Helm charts in a directory/git repository.
 ## Install
 
 ```
-helm plugin install https://github.com/sapcc/helm-charts --version=master
+helm plugin install https://github.com/sapcc/helm-charts-plugin --version=master
 ```
 
 ## Usage
