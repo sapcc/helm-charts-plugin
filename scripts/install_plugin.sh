@@ -8,15 +8,15 @@ if [ -n "${HELM_OUTDATED_DEPENDENCIES_PLUGIN_NO_INSTALL_HOOK}" ]; then
 fi
 
 version="$(cat plugin.yaml | grep "version" | cut -d '"' -f 2)"
-echo "Downloading and installing helm-charts v${version} ..."
+echo "Downloading and installing helm-charts-plugin v${version} ..."
 
 url=""
 if [ "$(uname)" = "Darwin" ]; then
-    url="https://github.com/sapcc/helm-charts-plugin/releases/download/v${version}/helm-charts_${version}_darwin_amd64.tar.gz"
+    url="https://github.com/sapcc/helm-charts-plugin/releases/download/v${version}/helm-charts-plugin_${version}_darwin_amd64.tar.gz"
 elif [ "$(uname)" = "Linux" ] ; then
-    url="https://github.com/sapcc/helm-charts-plugin/releases/download/v${version}/helm-charts_${version}_linux_amd64.tar.gz"
+    url="https://github.com/sapcc/helm-charts-plugin/releases/download/v${version}/helm-charts-plugin_${version}_linux_amd64.tar.gz"
 else
-    url="https://github.com/sapcc/helm-charts-plugin/releases/download/v${version}/helm-charts_${version}_windows_amd64.tar.gz"
+    url="https://github.com/sapcc/helm-charts-plugin/releases/download/v${version}/helm-charts-plugin_${version}_windows_amd64.tar.gz"
 fi
 
 echo $url
@@ -31,5 +31,5 @@ else
     wget -q "${url}" -O "releases/v${version}.tar.gz"
 fi
 tar xzf "releases/v${version}.tar.gz" -C "releases/v${version}"
-mv "releases/v${version}/bin/helm-charts" "bin/helm-charts" || \
-    mv "releases/v${version}/bin/helm-charts.exe" "bin/helm-charts"
+mv "releases/v${version}/bin/helm-charts-plugin" "bin/helm-charts" || \
+    mv "releases/v${version}/bin/helm-charts-plugin.exe" "bin/helm-charts"
