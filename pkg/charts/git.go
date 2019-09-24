@@ -72,6 +72,20 @@ func (g *git) getChangedDirs(remote, commit string) ([]string, error) {
 	return changedDirs, nil
 }
 
+func (g *git) getCommitHash(commit string) (string, error) {
+	stdOut, _, err := g.runGitCmd("rev-parse", commit)
+	return stdOut, err
+}
+
+func (g *git) getMergeBase(commit1, commit2 string) (string, error) {
+	stdOut, _, err := g.runGitCmd("merge-base", commit1, commit2)
+	if err != nil {
+		return "", err
+	}
+
+	return stdOut, err
+}
+
 func (g *git) runGitCmd(args ...string) (string, string, error) {
 	var (
 		stdout,

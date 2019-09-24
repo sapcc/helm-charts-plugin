@@ -75,7 +75,17 @@ func ListChangedHelmChartsInFolder(rootDirectory string, excludeDirs []string, r
 		return nil, err
 	}
 
-	changedDirs, err := git.getChangedDirs(fmt.Sprintf("%s/%s", remote, branch), commit)
+	lastCommitOhCurrentBranch, err := git.getCommitHash(commit)
+	if err != nil {
+		return nil, err
+	}
+
+	mergeBase, err := git.getMergeBase(fmt.Sprintf("%s/%s", remote, branch), lastCommitOhCurrentBranch)
+	if err != nil {
+		return nil, err
+	}
+
+	changedDirs, err := git.getChangedDirs(mergeBase, lastCommitOhCurrentBranch)
 	if err != nil {
 		return nil, err
 	}
@@ -89,6 +99,7 @@ func ListChangedHelmChartsInFolder(rootDirectory string, excludeDirs []string, r
 
 		c, err := loadChartMetadata(path)
 		if err != nil {
+			fmt.Printf("failed to load chart metadata: %s\n", err.Error())
 			continue
 		}
 
@@ -137,7 +148,7 @@ func isValidChartDirectory(absPath string, excludeDirs []string) bool {
 	}
 
 	_, err := os.Stat(path.Join(absPath, chartMetadataName))
-	return !os.IsNotExist(err)
+	return err == nil
 }
 
 func getChartRootDirectory(root, path string, excludedDirs []string) (string, error) {
