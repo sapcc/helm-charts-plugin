@@ -40,6 +40,7 @@ type changedChartsCmd struct {
 	outputDir          string
 	outputFilename     string
 	writeOnlyChartPath bool
+	isUseRelativePath  bool
 
 	remote,
 	branch,
@@ -89,6 +90,10 @@ func newChangedChartsCmd() *cobra.Command {
 				c.includeVendor = v
 			}
 
+			if v, err := cmd.Flags().GetBool(flagUseRelativePath); err == nil {
+				c.isUseRelativePath = v
+			}
+
 			return c.listChanged()
 		},
 	}
@@ -106,7 +111,7 @@ func (c *changedChartsCmd) listChanged() error {
 		c.excludeDirs = append(c.excludeDirs, "vendor")
 	}
 
-	results, err := charts.ListChangedHelmChartsInFolder(c.directory, c.excludeDirs, c.remote, c.branch, c.commit)
+	results, err := charts.ListChangedHelmChartsInFolder(c.directory, c.excludeDirs, c.remote, c.branch, c.commit, c.isUseRelativePath)
 	if err != nil {
 		return err
 	}

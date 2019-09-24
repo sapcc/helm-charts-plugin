@@ -1,13 +1,12 @@
 package charts
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
-
-	"github.com/pkg/errors"
 
 	"github.com/Masterminds/semver"
 	"k8s.io/helm/pkg/chartutil"
@@ -28,7 +27,7 @@ func (h *HelmChart) Equal(c *HelmChart) bool {
 }
 
 // ListHelmChartsInFolder list all Helm charts in the given folder.
-func ListHelmChartsInFolder(folder string, excludeDirs []string) ([]*HelmChart, error) {
+func ListHelmChartsInFolder(folder string, excludeDirs []string, isUseRelativePath bool) ([]*HelmChart, error) {
 	folder, err := filepath.Abs(folder)
 	if err != nil {
 		return nil, err
@@ -45,6 +44,15 @@ func ListHelmChartsInFolder(folder string, excludeDirs []string) ([]*HelmChart, 
 			if err != nil {
 				return err
 			}
+
+			if isUseRelativePath {
+				relPath, err := filepath.Rel(folder, c.Path)
+				if err != nil {
+					return err
+				}
+				c.Path = relPath
+			}
+
 			if !containsChart(charts, c) {
 				charts = append(charts, c)
 			}
@@ -55,7 +63,7 @@ func ListHelmChartsInFolder(folder string, excludeDirs []string) ([]*HelmChart, 
 }
 
 // ListChangedHelmChartsInFolder compares the current version agains the given remote/branch:commit and lists the changed Helm charts.
-func ListChangedHelmChartsInFolder(rootDirectory string, excludeDirs []string, remote, branch, commit string) ([]*HelmChart, error) {
+func ListChangedHelmChartsInFolder(rootDirectory string, excludeDirs []string, remote, branch, commit string, isUseRelativePath bool) ([]*HelmChart, error) {
 	git, err := newGit(rootDirectory, remote)
 	if err != nil {
 		return nil, err
@@ -80,6 +88,14 @@ func ListChangedHelmChartsInFolder(rootDirectory string, excludeDirs []string, r
 		c, err := loadChartMetadata(path)
 		if err != nil {
 			continue
+		}
+
+		if isUseRelativePath {
+			relPath, err := filepath.Rel(rootDirectory, c.Path)
+			if err != nil {
+				continue
+			}
+			c.Path = relPath
 		}
 
 		if !containsChart(res, c) {
