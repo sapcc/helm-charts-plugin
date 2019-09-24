@@ -6,6 +6,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/Masterminds/semver"
@@ -59,7 +60,8 @@ func ListHelmChartsInFolder(folder string, excludeDirs []string, isUseRelativePa
 		}
 		return nil
 	})
-	return charts, err
+
+	return sortChartsAlphabetically(charts), err
 }
 
 // ListChangedHelmChartsInFolder compares the current version agains the given remote/branch:commit and lists the changed Helm charts.
@@ -102,7 +104,7 @@ func ListChangedHelmChartsInFolder(rootDirectory string, excludeDirs []string, r
 			res = append(res, c)
 		}
 	}
-	return res, nil
+	return sortChartsAlphabetically(res), nil
 }
 
 func loadChartMetadata(absPathChartFolder string) (*HelmChart, error) {
@@ -158,4 +160,11 @@ func containsChart(charts []*HelmChart, chart *HelmChart) bool {
 		}
 	}
 	return false
+}
+
+func sortChartsAlphabetically(charts []*HelmChart) []*HelmChart {
+	sort.Slice(charts, func(i, j int) bool {
+		return charts[i].Name < charts[j].Name
+	})
+	return charts
 }
