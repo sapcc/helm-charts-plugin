@@ -19,13 +19,15 @@ Examples:
   $ helm charts list-changed <path> <flags>
 
   flags:
-    --branch string          The name of the branch used to identify changes. (default "master")
-    --commit string          The commit used to identify changes. (default "HEAD")
-    --exclude-dirs strings   List of (sub-)directories to exclude.
-    --include-vendor         Also consider charts in the vendor folder.
-    --only-path              Only output the chart path.
-    --output-dir string      If given, results will be written to file in this directory.
-    --remote string          The name of the git remote used to identify changes. (default "origin)"
+    --branch 			string			The name of the branch used to identify changes. (default "master")
+    --commit 			string          The commit used to identify changes. (default "HEAD")
+    --exclude-dirs 		strings   		List of (sub-)directories to exclude.
+    --include-vendor 	bool       		Also consider charts in the vendor folder.
+    --only-path         bool     		Only output the chart path.
+    --output-dir 		string      	If given, results will be written to file in this directory.
+    --output-filename 	string			Filename to use for output. (default "results.txt")
+    --remote 			string          The name of the git remote used to identify changes. (default "origin)
+   
 `
 
 type changedChartsCmd struct {
@@ -36,6 +38,7 @@ type changedChartsCmd struct {
 	timeout            time.Duration
 	includeVendor      bool
 	outputDir          string
+	outputFilename     string
 	writeOnlyChartPath bool
 
 	remote,
@@ -72,6 +75,10 @@ func newChangedChartsCmd() *cobra.Command {
 
 			if v, _ := cmd.Flags().GetString(flagOutputDir); v != "" {
 				c.outputDir = v
+			}
+
+			if v, _ := cmd.Flags().GetString(flagOutputFileName); v != "" {
+				c.outputFilename = v
 			}
 
 			if v, err := cmd.Flags().GetBool(flagWriteOnlyPath); err == nil {
@@ -138,7 +145,7 @@ func (c *changedChartsCmd) formatTableOutput(results []*charts.HelmChart) string
 }
 
 func (c *changedChartsCmd) writeToFile(results []*charts.HelmChart) error {
-	f, err := charts.EnsureFileExists(c.outputDir, outFileName)
+	f, err := charts.EnsureFileExists(c.outputDir, c.outputFilename)
 	if err != nil {
 		return err
 	}

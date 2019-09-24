@@ -1,15 +1,13 @@
 package cmd
 
-import (
-	"github.com/spf13/cobra"
-)
+import "github.com/spf13/cobra"
 
 const (
-	flagExcludeDirs   = "exclude-dirs"
-	flagIncludeVendor = "include-vendor"
-	flagOutputDir     = "output-dir"
-	flagWriteOnlyPath = "only-path"
-	outFileName       = "result.txt"
+	flagExcludeDirs    = "exclude-dirs"
+	flagIncludeVendor  = "include-vendor"
+	flagOutputDir      = "output-dir"
+	flagOutputFileName = "output-filename"
+	flagWriteOnlyPath  = "only-path"
 )
 
 var rootCmdLongUsage = `
@@ -39,5 +37,6 @@ func addCommonFlags(cmd *cobra.Command) {
 	cmd.Flags().StringSliceP(flagExcludeDirs, "", []string{}, "List of (sub-)directories to exclude.")
 	cmd.Flags().BoolP(flagIncludeVendor, "", false, "Also consider charts in the vendor folder.")
 	cmd.Flags().StringP(flagOutputDir, "", "", "If given, results will be written to file in this directory.")
+	cmd.Flags().StringP(flagOutputFileName, "", "results.txt", "Filename to use for output.")
 	cmd.Flags().BoolP(flagWriteOnlyPath, "", false, "Only output the chart path.")
 }

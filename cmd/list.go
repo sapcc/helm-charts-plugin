@@ -19,10 +19,11 @@ Examples:
   $ helm charts list <path> <flags>
 
   flags:
-      --exclude-dirs strings   List of (sub-)directories to exclude.
-      --include-vendor         Also consider charts in the vendor folder.
-      --only-path              Only output the chart path.
-      --output-dir string      If given, results will be written to file in this directory.
+      --exclude-dirs		strings		   	List of (sub-)directories to exclude.
+      --include-vendor      bool   			Also consider charts in the vendor folder.
+      --only-path           bool   			Only output the chart path.
+      --output-dir		    string   		If given, results will be written to file in this directory.
+	  --output-filename     string   		Filename to use for output. (default "results.txt")
 `
 
 type listChartsCmd struct {
@@ -33,6 +34,7 @@ type listChartsCmd struct {
 	timeout            time.Duration
 	includeVendor      bool
 	outputDir          string
+	outputFilename     string
 	writeOnlyChartPath bool
 }
 
@@ -65,6 +67,10 @@ func newListChartsCmd() *cobra.Command {
 
 			if v, _ := cmd.Flags().GetString(flagOutputDir); v != "" {
 				l.outputDir = v
+			}
+
+			if v, _ := cmd.Flags().GetString(flagOutputFileName); v != "" {
+				l.outputFilename = v
 			}
 
 			if v, err := cmd.Flags().GetBool(flagWriteOnlyPath); err == nil {
@@ -128,7 +134,7 @@ func (l *listChartsCmd) formatTableOutput(results []*charts.HelmChart) string {
 }
 
 func (l *listChartsCmd) writeToFile(results []*charts.HelmChart) error {
-	f, err := charts.EnsureFileExists(l.outputDir, outFileName)
+	f, err := charts.EnsureFileExists(l.outputDir, l.outputFilename)
 	if err != nil {
 		return err
 	}
