@@ -83,6 +83,10 @@ func (g *git) getMergeBase(commit1, commit2 string) (string, error) {
 		return "", err
 	}
 
+	if stdOut == commit2 {
+		stdOut = "HEAD"
+	}
+
 	return stdOut, err
 }
 

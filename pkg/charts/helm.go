@@ -75,17 +75,17 @@ func ListChangedHelmChartsInFolder(rootDirectory string, excludeDirs []string, r
 		return nil, err
 	}
 
-	lastCommitOhCurrentBranch, err := git.getCommitHash(commit)
+	commitHash, err := git.getCommitHash(commit)
 	if err != nil {
 		return nil, err
 	}
 
-	mergeBase, err := git.getMergeBase(fmt.Sprintf("%s/%s", remote, branch), lastCommitOhCurrentBranch)
+	mergeBase, err := git.getMergeBase(fmt.Sprintf("%s/%s", remote, branch), commitHash)
 	if err != nil {
 		return nil, err
 	}
 
-	changedDirs, err := git.getChangedDirs(mergeBase, lastCommitOhCurrentBranch)
+	changedDirs, err := git.getChangedDirs(mergeBase, commitHash)
 	if err != nil {
 		return nil, err
 	}
