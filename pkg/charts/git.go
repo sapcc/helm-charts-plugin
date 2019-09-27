@@ -10,6 +10,7 @@ import (
 )
 
 var (
+	errGitNotInstalled = errors.New("git is not installed")
 	errNoGitRepository = errors.New("folder is not a git repository")
 	errNoRemote        = errors.New("no remote configured in git repository")
 )
@@ -24,12 +25,23 @@ type git struct {
 
 func newGit(directory, remote string) (*git, error) {
 	g := &git{
-		cmd:       "git",
+		cmd:       "foo",
 		directory: directory,
 		remote:    remote,
 	}
 
+	if err := g.testGitInstalled(); err != nil {
+		return nil, err
+	}
+
 	return g, g.testGitRepository()
+}
+
+func (g *git) testGitInstalled() error {
+	if _, _, err := g.runGitCmd("--version"); err != nil {
+		return errGitNotInstalled
+	}
+	return nil
 }
 
 func (g *git) testGitRepository() error {
