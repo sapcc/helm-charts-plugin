@@ -25,7 +25,7 @@ type git struct {
 
 func newGit(directory, remote string) (*git, error) {
 	g := &git{
-		cmd:       "foo",
+		cmd:       "git",
 		directory: directory,
 		remote:    remote,
 	}
