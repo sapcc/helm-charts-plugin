@@ -97,7 +97,7 @@ func newListChartsCmd() *cobra.Command {
 
 func (l *listChartsCmd) list() error {
 	if !l.includeVendor {
-		l.excludeDirs = append(l.excludeDirs, "vendor")
+		l.excludeDirs = append(l.excludeDirs, "/vendor", "/charts")
 	}
 
 	results, err := charts.ListHelmChartsInFolder(l.folder, l.excludeDirs, l.isUseRelativePath)

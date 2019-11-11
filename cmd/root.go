@@ -36,7 +36,7 @@ func New() *cobra.Command {
 
 func addCommonFlags(cmd *cobra.Command) {
 	cmd.Flags().StringSliceP(flagExcludeDirs, "", []string{}, "List of (sub-)directories to exclude.")
-	cmd.Flags().BoolP(flagIncludeVendor, "", false, "Also consider charts in the vendor folder.")
+	cmd.Flags().BoolP(flagIncludeVendor, "", false, "Whether to consider sub-charts in the /vendor and /charts folders.")
 	cmd.Flags().StringP(flagOutputDir, "", "", "If given, results will be written to file in this directory.")
 	cmd.Flags().StringP(flagOutputFileName, "", "results.txt", "Filename to use for output.")
 	cmd.Flags().BoolP(flagWriteOnlyPath, "", false, "Only output the chart path.")
