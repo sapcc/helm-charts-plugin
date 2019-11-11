@@ -118,6 +118,25 @@ func ListChangedHelmChartsInFolder(rootDirectory string, excludeDirs []string, r
 	return sortChartsAlphabetically(res), nil
 }
 
+// FindDuplicateChartsInFolder find duplicate Helm charts in the given folder.
+func FindDuplicateChartsInFolder(folder string, excludeDirs []string, isUseRelativePath bool) ([]*HelmChart, error) {
+	foundCharts, err := ListHelmChartsInFolder(folder, excludeDirs, isUseRelativePath)
+	if err != nil {
+		return nil, err
+	}
+
+	// A Helm chart is considers a duplicate if the chart names are equivalent but not the path'.
+	dups := make([]*HelmChart, 0)
+	for _, i := range foundCharts {
+		for _, j := range foundCharts {
+			if i.Name == j.Name && i.Path != j.Path {
+				dups = append(dups, i)
+			}
+		}
+	}
+	return sortChartsAlphabetically(dups), nil
+}
+
 func loadChartMetadata(absPathChartFolder string) (*HelmChart, error) {
 	meta, err := chartutil.LoadChartfile(path.Join(absPathChartFolder, chartMetadataName))
 	if err != nil {

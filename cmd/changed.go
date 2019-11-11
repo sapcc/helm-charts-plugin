@@ -108,7 +108,7 @@ func newChangedChartsCmd() *cobra.Command {
 
 func (c *changedChartsCmd) listChanged() error {
 	if !c.includeVendor {
-		c.excludeDirs = append(c.excludeDirs, "vendor")
+		c.excludeDirs = append(c.excludeDirs, excludeVendorPaths...)
 	}
 
 	results, err := charts.ListChangedHelmChartsInFolder(c.directory, c.excludeDirs, c.remote, c.branch, c.commit, c.isUseRelativePath)

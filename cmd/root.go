@@ -11,12 +11,16 @@ const (
 	flagUseRelativePath = "relative-path"
 )
 
+// excludeVendorPaths contains the path' that are excluded unless 'include-vendor' is given.
+var excludeVendorPaths = []string{"/vendor", "/charts"}
+
 var rootCmdLongUsage = `
 Plugin that helps to manage helm charts.
 
 Examples:
   $ helm charts list 		 <path> <flags>		- List Helm charts in the given directory.
   $ helm charts list-changed <path> <flags> 	- Identify and list Helm charts that were changed compared to another commit.
+	$ helm charts find-duplicates <path> <flags> - Find duplicate Helm charts in the given directory.
 `
 
 func New() *cobra.Command {
@@ -29,6 +33,7 @@ func New() *cobra.Command {
 	cmd.AddCommand(
 		newListChartsCmd(),
 		newChangedChartsCmd(),
+		newFindDuplicatesChartsCmd(),
 	)
 
 	return cmd

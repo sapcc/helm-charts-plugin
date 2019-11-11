@@ -1,54 +1,53 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
-	"path/filepath"
-	"time"
-
 	"github.com/gosuri/uitable"
 	"github.com/sapcc/helm-charts-plugin/pkg/charts"
 	"github.com/sapcc/helm-outdated-dependencies/pkg/helm"
 	"github.com/spf13/cobra"
 	helm_env "k8s.io/helm/pkg/helm/environment"
+	"path/filepath"
 )
 
-var listChartsLongUsage = `
-Plugin to list Helm charts in the given folder. 
+var findDuplicatesChartsLongUsage = `
+Plugin to find duplicate Helm charts in the given folder. 
 
 Examples:
-  $ helm charts list <path> <flags>
+  $ helm charts find-duplicates <path> <flags>
 
   flags:
-      --exclude-dirs		strings		   	List of (sub-)directories to exclude.
+      --exclude-dirs				strings		  List of (sub-)directories to exclude.
       --include-vendor      bool   			Also consider charts in the vendor folder.
       --only-path           bool   			Only output the chart path.
-      --output-dir		    string   		If given, results will be written to file in this directory.
-	  --output-filename     string   		Filename to use for output. (default "results.txt")
+      --output-dir		    	string   		If given, results will be written to file in this directory.
+	  	--output-filename     string   		Filename to use for output. (default "results.txt")
+			--fail-on-duplicates	bool				Fail if duplicate charts are found.	
 `
 
-type listChartsCmd struct {
+type findDuplicatesChartsCmd struct {
 	helmSettings *helm_env.EnvSettings
-
-	folder             string
-	excludeDirs        []string
-	timeout            time.Duration
-	includeVendor      bool
-	outputDir          string
-	outputFilename     string
-	writeOnlyChartPath bool
-	isUseRelativePath bool
+	folder,
+	outputDir,
+	outputFilename string
+	includeVendor,
+	writeOnlyChartPath,
+	isUseRelativePath,
+	failOnDuplicates bool
+	excludeDirs []string
 }
 
-func newListChartsCmd() *cobra.Command {
-	l := &listChartsCmd{
+func newFindDuplicatesChartsCmd() *cobra.Command {
+	l := &findDuplicatesChartsCmd{
 		helmSettings: &helm_env.EnvSettings{
 			Home: helm.GetHelmHome(),
 		},
 	}
 
 	cmd := &cobra.Command{
-		Use:          "list",
-		Long:         listChartsLongUsage,
+		Use:          "find-duplicates",
+		Long:         findDuplicatesChartsLongUsage,
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			path := "."
@@ -86,27 +85,28 @@ func newListChartsCmd() *cobra.Command {
 				l.isUseRelativePath = v
 			}
 
-			return l.list()
+			return l.findDuplicates()
 		},
 	}
 
 	addCommonFlags(cmd)
+	cmd.Flags().BoolVarP(&l.failOnDuplicates, "fail-on-duplicates", "", false, "Fail if duplicate charts are found.")
 
 	return cmd
 }
 
-func (l *listChartsCmd) list() error {
+func (l *findDuplicatesChartsCmd) findDuplicates() error {
 	if !l.includeVendor {
 		l.excludeDirs = append(l.excludeDirs, excludeVendorPaths...)
 	}
 
-	results, err := charts.ListHelmChartsInFolder(l.folder, l.excludeDirs, l.isUseRelativePath)
+	results, err := charts.FindDuplicateChartsInFolder(l.folder, l.excludeDirs, l.isUseRelativePath)
 	if err != nil {
 		return err
 	}
 
 	if len(results) == 0 {
-		fmt.Println("Not a single chart was found.")
+		fmt.Println("No duplicates found.")
 		return nil
 	}
 
@@ -116,10 +116,14 @@ func (l *listChartsCmd) list() error {
 		return l.writeToFile(results)
 	}
 
+	if l.failOnDuplicates {
+		return errors.New("found multiple helm charts with the same name")
+	}
+
 	return nil
 }
 
-func (l *listChartsCmd) formatTableOutput(results []*charts.HelmChart) string {
+func (l *findDuplicatesChartsCmd) formatTableOutput(results []*charts.HelmChart) string {
 	table := uitable.New()
 	table.MaxColWidth = 200
 
@@ -138,7 +142,7 @@ func (l *listChartsCmd) formatTableOutput(results []*charts.HelmChart) string {
 	return table.String()
 }
 
-func (l *listChartsCmd) writeToFile(results []*charts.HelmChart) error {
+func (l *findDuplicatesChartsCmd) writeToFile(results []*charts.HelmChart) error {
 	f, err := charts.EnsureFileExists(l.outputDir, l.outputFilename)
 	if err != nil {
 		return err
