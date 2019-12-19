@@ -29,14 +29,15 @@ Examples:
 type listChartsCmd struct {
 	helmSettings *helm_env.EnvSettings
 
-	folder             string
-	excludeDirs        []string
-	timeout            time.Duration
-	includeVendor      bool
-	outputDir          string
-	outputFilename     string
-	writeOnlyChartPath bool
-	isUseRelativePath bool
+	excludeDirs []string
+	timeout     time.Duration
+	folder,
+	outputDir,
+	outputFilename string
+	includeVendor,
+	isUseRelativePath,
+	writeOnlyChartPath,
+	writeOnlyChartName bool
 }
 
 func newListChartsCmd() *cobra.Command {
@@ -86,6 +87,10 @@ func newListChartsCmd() *cobra.Command {
 				l.isUseRelativePath = v
 			}
 
+			if v, err := cmd.Flags().GetBool(flagOnlyChartName); err == nil {
+				l.writeOnlyChartName = v
+			}
+
 			return l.list()
 		},
 	}
@@ -123,7 +128,7 @@ func (l *listChartsCmd) formatTableOutput(results []*charts.HelmChart) string {
 	table := uitable.New()
 	table.MaxColWidth = 200
 
-	if !l.writeOnlyChartPath {
+	if !l.writeOnlyChartPath && !l.writeOnlyChartName {
 		table.AddRow("The following charts were found:")
 		table.AddRow("NAME", "VERSION", "PATH")
 	}
@@ -131,6 +136,8 @@ func (l *listChartsCmd) formatTableOutput(results []*charts.HelmChart) string {
 	for _, r := range results {
 		if l.writeOnlyChartPath {
 			table.AddRow(r.Path)
+		} else if l.writeOnlyChartName{
+			table.AddRow(r.Name)
 		} else {
 			table.AddRow(r.Name, r.Version, r.Path)
 		}
