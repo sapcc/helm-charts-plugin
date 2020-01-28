@@ -40,6 +40,7 @@ type changedChartsCmd struct {
 	outputDir          string
 	outputFilename     string
 	writeOnlyChartPath bool
+	writeOnlyChartName bool
 	isUseRelativePath  bool
 
 	remote,
@@ -84,6 +85,10 @@ func newChangedChartsCmd() *cobra.Command {
 
 			if v, err := cmd.Flags().GetBool(flagWriteOnlyPath); err == nil {
 				c.writeOnlyChartPath = v
+			}
+
+			if v, err := cmd.Flags().GetBool(flagWriteOnlyPath); err == nil {
+				c.writeOnlyChartName = v
 			}
 
 			if v, err := cmd.Flags().GetBool(flagIncludeVendor); err == nil {
@@ -134,7 +139,7 @@ func (c *changedChartsCmd) formatTableOutput(results []*charts.HelmChart) string
 	table := uitable.New()
 	table.MaxColWidth = 200
 
-	if !c.writeOnlyChartPath {
+	if !c.writeOnlyChartPath || !c.writeOnlyChartName {
 		table.AddRow(fmt.Sprintf("Compared to %s/%s:%s following charts were changed:", c.remote, c.branch, c.commit))
 		table.AddRow("NAME", "VERSION", "PATH")
 	}
