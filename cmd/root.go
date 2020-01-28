@@ -8,7 +8,7 @@ const (
 	flagOutputDir       = "output-dir"
 	flagOutputFileName  = "output-filename"
 	flagWriteOnlyPath   = "only-path"
-	flagOnlyChartName   = "only-name"
+	flagWriteOnlyName   = "only-name"
 	flagUseRelativePath = "relative-path"
 )
 
@@ -47,5 +47,5 @@ func addCommonFlags(cmd *cobra.Command) {
 	cmd.Flags().StringP(flagOutputFileName, "", "results.txt", "Filename to use for output.")
 	cmd.Flags().BoolP(flagWriteOnlyPath, "", false, "Only output the chart path.")
 	cmd.Flags().BoolP(flagUseRelativePath, "", false, "Return chart path' relative to the given directory.")
-	cmd.Flags().BoolP(flagOnlyChartName, "", false, "Only print the name of the chart.")
+	cmd.Flags().BoolP(flagWriteOnlyName, "", false, "Only print the name of the chart.")
 }

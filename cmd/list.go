@@ -75,10 +75,6 @@ func newListChartsCmd() *cobra.Command {
 				l.outputFilename = v
 			}
 
-			if v, err := cmd.Flags().GetBool(flagWriteOnlyPath); err == nil {
-				l.writeOnlyChartPath = v
-			}
-
 			if v, err := cmd.Flags().GetBool(flagIncludeVendor); err == nil {
 				l.includeVendor = v
 			}
@@ -87,7 +83,11 @@ func newListChartsCmd() *cobra.Command {
 				l.isUseRelativePath = v
 			}
 
-			if v, err := cmd.Flags().GetBool(flagOnlyChartName); err == nil {
+			if v, err := cmd.Flags().GetBool(flagWriteOnlyPath); err == nil {
+				l.writeOnlyChartPath = v
+			}
+
+			if v, err := cmd.Flags().GetBool(flagWriteOnlyName); err == nil {
 				l.writeOnlyChartName = v
 			}
 
@@ -127,6 +127,7 @@ func (l *listChartsCmd) list() error {
 func (l *listChartsCmd) formatTableOutput(results []*charts.HelmChart) string {
 	table := uitable.New()
 	table.MaxColWidth = 200
+
 
 	if !l.writeOnlyChartPath && !l.writeOnlyChartName {
 		table.AddRow("The following charts were found:")

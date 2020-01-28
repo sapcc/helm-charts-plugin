@@ -83,11 +83,7 @@ func newChangedChartsCmd() *cobra.Command {
 				c.outputFilename = v
 			}
 
-			if v, err := cmd.Flags().GetBool(flagWriteOnlyPath); err == nil {
-				c.writeOnlyChartPath = v
-			}
-
-			if v, err := cmd.Flags().GetBool(flagWriteOnlyPath); err == nil {
+			if v, err := cmd.Flags().GetBool(flagWriteOnlyName); err == nil {
 				c.writeOnlyChartName = v
 			}
 
@@ -97,6 +93,14 @@ func newChangedChartsCmd() *cobra.Command {
 
 			if v, err := cmd.Flags().GetBool(flagUseRelativePath); err == nil {
 				c.isUseRelativePath = v
+			}
+
+			if v, err := cmd.Flags().GetBool(flagWriteOnlyName); err == nil {
+				c.writeOnlyChartName = v
+			}
+
+			if v, err := cmd.Flags().GetBool(flagWriteOnlyPath); err == nil {
+				c.writeOnlyChartPath = v
 			}
 
 			return c.listChanged()
@@ -139,7 +143,7 @@ func (c *changedChartsCmd) formatTableOutput(results []*charts.HelmChart) string
 	table := uitable.New()
 	table.MaxColWidth = 200
 
-	if !c.writeOnlyChartPath || !c.writeOnlyChartName {
+	if !c.writeOnlyChartPath && !c.writeOnlyChartName {
 		table.AddRow(fmt.Sprintf("Compared to %s/%s:%s following charts were changed:", c.remote, c.branch, c.commit))
 		table.AddRow("NAME", "VERSION", "PATH")
 	}
@@ -147,6 +151,8 @@ func (c *changedChartsCmd) formatTableOutput(results []*charts.HelmChart) string
 	for _, r := range results {
 		if c.writeOnlyChartPath {
 			table.AddRow(r.Path)
+		} else if c.writeOnlyChartName {
+			table.AddRow(r.Name)
 		} else {
 			table.AddRow(r.Name, r.Version, r.Path)
 		}
