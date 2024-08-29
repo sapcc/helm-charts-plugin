@@ -12,7 +12,7 @@ import (
 )
 
 var findDuplicatesChartsLongUsage = `
-Plugin to find duplicate Helm charts in the given folder. 
+Plugin to find duplicate Helm charts in the given folder.
 
 Examples:
   $ helm charts find-duplicates <path> <flags>
@@ -22,8 +22,8 @@ Examples:
       --include-vendor      bool   			Also consider charts in the vendor folder.
       --only-path           bool   			Only output the chart path.
       --output-dir		    	string   		If given, results will be written to file in this directory.
-	  	--output-filename     string   		Filename to use for output. (default "results.txt")
-			--fail-on-duplicates	bool				Fail if duplicate charts are found.	
+      --output-filename     string   		Filename to use for output. (default "results.txt")
+			--fail-on-duplicates	bool				Fail if duplicate charts are found.
 `
 
 type findDuplicatesChartsCmd struct {

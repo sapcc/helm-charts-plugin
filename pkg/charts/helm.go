@@ -64,7 +64,7 @@ func ListHelmChartsInFolder(folder string, excludeDirs []string, isUseRelativePa
 	return sortChartsAlphabetically(charts), err
 }
 
-// ListChangedHelmChartsInFolder compares the current version agains the given remote/branch:commit and lists the changed Helm charts.
+// ListChangedHelmChartsInFolder compares the current version against the given remote/branch:commit and lists the changed Helm charts.
 func ListChangedHelmChartsInFolder(rootDirectory string, excludeDirs []string, remote, branch, commit string, isUseRelativePath bool) ([]*HelmChart, error) {
 	git, err := newGit(rootDirectory, remote)
 	if err != nil {

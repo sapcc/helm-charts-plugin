@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"path/filepath"
-	"time"
 
 	"github.com/gosuri/uitable"
 	"github.com/sapcc/helm-charts-plugin/pkg/charts"
@@ -26,7 +25,7 @@ Examples:
     --output-dir 		string      	If given, results will be written to file in this directory.
     --output-filename 	string			Filename to use for output. (default "results.txt")
     --remote 			string          The name of the git remote used to identify changes. (default "origin)
-   
+
 `
 
 type changedChartsCmd struct {
@@ -34,7 +33,6 @@ type changedChartsCmd struct {
 
 	directory          string
 	excludeDirs        []string
-	timeout            time.Duration
 	includeVendor      bool
 	outputDir          string
 	outputFilename     string

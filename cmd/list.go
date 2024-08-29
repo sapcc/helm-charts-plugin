@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"path/filepath"
-	"time"
 
 	"github.com/gosuri/uitable"
 	"github.com/sapcc/helm-charts-plugin/pkg/charts"
@@ -12,24 +11,23 @@ import (
 )
 
 var listChartsLongUsage = `
-Plugin to list Helm charts in the given folder. 
+Plugin to list Helm charts in the given folder.
 
 Examples:
   $ helm charts list <path> <flags>
 
   flags:
-      --exclude-dirs		strings		   	List of (sub-)directories to exclude.
-      --include-vendor      bool   			Also consider charts in the vendor folder.
-      --only-path           bool   			Only output the chart path.
-      --output-dir		    string   		If given, results will be written to file in this directory.
-	  --output-filename     string   		Filename to use for output. (default "results.txt")
+      --exclude-dirs        strings     List of (sub-)directories to exclude.
+      --include-vendor      bool        Also consider charts in the vendor folder.
+      --only-path           bool        Only output the chart path.
+      --output-dir          string      If given, results will be written to file in this directory.
+      --output-filename     strin       Filename to use for output. (default "results.txt")
 `
 
 type listChartsCmd struct {
 	helmSettings *helm_env.EnvSettings
 
 	excludeDirs []string
-	timeout     time.Duration
 	folder,
 	outputDir,
 	outputFilename string
@@ -127,7 +125,6 @@ func (l *listChartsCmd) formatTableOutput(results []*charts.HelmChart) string {
 	table := uitable.New()
 	table.MaxColWidth = 200
 
-
 	if !l.writeOnlyChartPath && !l.writeOnlyChartName {
 		table.AddRow("The following charts were found:")
 		table.AddRow("NAME", "VERSION", "PATH")
@@ -136,7 +133,7 @@ func (l *listChartsCmd) formatTableOutput(results []*charts.HelmChart) string {
 	for _, r := range results {
 		if l.writeOnlyChartPath {
 			table.AddRow(r.Path)
-		} else if l.writeOnlyChartName{
+		} else if l.writeOnlyChartName {
 			table.AddRow(r.Name)
 		} else {
 			table.AddRow(r.Name, r.Version, r.Path)

@@ -20,7 +20,6 @@ type git struct {
 
 	cmd       string
 	directory string
-	baseArgs  []string
 }
 
 func newGit(directory, remote string) (*git, error) {
@@ -50,7 +49,7 @@ func (g *git) testGitRepository() error {
 		return errNoGitRepository
 	}
 
-	if b, err := strconv.ParseBool(stdout); err == nil && b == true {
+	if b, err := strconv.ParseBool(stdout); err == nil && b {
 		return nil
 	}
 
@@ -121,8 +120,6 @@ func (g *git) runGitCmd(args ...string) (string, string, error) {
 func (g *git) pathWithDirectory(path string) string {
 	// Avoid duplicating folder name when joining path.
 	base := filepath.Base(g.directory)
-	if strings.HasPrefix(path, base) {
-		path = strings.TrimPrefix(path, base)
-	}
+	path = strings.TrimPrefix(path, base)
 	return filepath.Join(g.directory, path)
 }
