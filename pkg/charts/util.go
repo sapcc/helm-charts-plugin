@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"os"
 	"path"
+
+	helm_env "k8s.io/helm/pkg/helm/environment"
+	"k8s.io/helm/pkg/helm/helmpath"
 )
 
 // EnsureFileExists ensures all directories and the file itself exist.
@@ -20,4 +23,13 @@ func EnsureFileExists(absPath, filename string) (*os.File, error) {
 		return nil, err
 	}
 	return f, f.Truncate(0)
+}
+
+// GetHelmHome returns the HELM_HOME path.
+func GetHelmHome() helmpath.Home {
+	home := helm_env.DefaultHelmHome
+	if h := os.Getenv("HELM_HOME"); h != "" {
+		home = h
+	}
+	return helmpath.Home(home)
 }

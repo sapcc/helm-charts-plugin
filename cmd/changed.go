@@ -7,7 +7,6 @@ import (
 
 	"github.com/gosuri/uitable"
 	"github.com/sapcc/helm-charts-plugin/pkg/charts"
-	"github.com/sapcc/helm-outdated-dependencies/pkg/helm"
 	"github.com/spf13/cobra"
 	helm_env "k8s.io/helm/pkg/helm/environment"
 )
@@ -51,7 +50,7 @@ type changedChartsCmd struct {
 func newChangedChartsCmd() *cobra.Command {
 	c := &changedChartsCmd{
 		helmSettings: &helm_env.EnvSettings{
-			Home: helm.GetHelmHome(),
+			Home: charts.GetHelmHome(),
 		},
 	}
 

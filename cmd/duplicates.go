@@ -3,12 +3,12 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"path/filepath"
+
 	"github.com/gosuri/uitable"
 	"github.com/sapcc/helm-charts-plugin/pkg/charts"
-	"github.com/sapcc/helm-outdated-dependencies/pkg/helm"
 	"github.com/spf13/cobra"
 	helm_env "k8s.io/helm/pkg/helm/environment"
-	"path/filepath"
 )
 
 var findDuplicatesChartsLongUsage = `
@@ -41,7 +41,7 @@ type findDuplicatesChartsCmd struct {
 func newFindDuplicatesChartsCmd() *cobra.Command {
 	l := &findDuplicatesChartsCmd{
 		helmSettings: &helm_env.EnvSettings{
-			Home: helm.GetHelmHome(),
+			Home: charts.GetHelmHome(),
 		},
 	}
 
