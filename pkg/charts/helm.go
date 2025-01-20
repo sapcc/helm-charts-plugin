@@ -7,7 +7,6 @@ import (
 	"path"
 	"path/filepath"
 	"sort"
-	"strings"
 
 	"github.com/Masterminds/semver"
 	"k8s.io/helm/pkg/chartutil"
@@ -125,7 +124,7 @@ func FindDuplicateChartsInFolder(folder string, excludeDirs []string, isUseRelat
 		return nil, err
 	}
 
-	// A Helm chart is considers a duplicate if the chart names are equivalent but not the path'.
+	// A Helm chart is considering a duplicate if the chart names are equivalent but not the path'.
 	dups := make([]*HelmChart, 0)
 	for _, i := range foundCharts {
 		for _, j := range foundCharts {
@@ -161,7 +160,7 @@ func isValidChartDirectory(absPath string, excludeDirs []string) bool {
 	}
 
 	for _, e := range excludeDirs {
-		if strings.Contains(absPath, e) {
+		if filepath.Base(absPath) == e {
 			return false
 		}
 	}
