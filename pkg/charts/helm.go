@@ -6,6 +6,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"slices"
 	"sort"
 
 	"github.com/Masterminds/semver"
@@ -160,7 +161,7 @@ func isValidChartDirectory(absPath string, excludeDirs []string) bool {
 	}
 
 	for _, e := range excludeDirs {
-		if filepath.Base(absPath) == e {
+		if slices.Contains(filepath.SplitList(absPath), e) {
 			return false
 		}
 	}
