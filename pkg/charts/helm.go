@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"slices"
 	"sort"
+	"strings"
 
 	"github.com/Masterminds/semver"
 	"k8s.io/helm/pkg/chartutil"
@@ -162,7 +163,7 @@ func isValidChartDirectory(absPath string, excludeDirs []string) bool {
 	}
 
 	for _, e := range excludeDirs {
-		if slices.Contains(filepath.SplitList(absPath), e) {
+		if slices.Contains(strings.Split(absPath, string(filepath.Separator)), e) {
 			return false
 		}
 	}
