@@ -16,15 +16,12 @@ var (
 )
 
 type git struct {
-	remote string
-
-	cmd       string
+	remote    string
 	directory string
 }
 
 func newGit(directory, remote string) (*git, error) {
 	g := &git{
-		cmd:       "git",
 		directory: directory,
 		remote:    remote,
 	}
@@ -106,7 +103,7 @@ func (g *git) runGitCmd(args ...string) (string, string, error) {
 		stdout,
 		stderr bytes.Buffer
 	)
-	cmd := exec.Command(g.cmd, append([]string{"-C", g.directory}, args...)...)
+	cmd := exec.Command("git", append([]string{"-C", g.directory}, args...)...)
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 	err := cmd.Run()
