@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"path/filepath"
 
@@ -60,33 +61,53 @@ func newListChartsCmd() *cobra.Command {
 			}
 			l.folder = folder
 
-			if v, _ := cmd.Flags().GetStringSlice(flagExcludeDirs); v != nil {
-				l.excludeDirs = v
+			excludeDirs, err := cmd.Flags().GetStringSlice(flagExcludeDirs)
+			if err != nil {
+				return err
+			}
+			if excludeDirs != nil {
+				l.excludeDirs = excludeDirs
 			}
 
-			if v, _ := cmd.Flags().GetString(flagOutputDir); v != "" {
-				l.outputDir = v
+			outputDir, err := cmd.Flags().GetString(flagOutputDir)
+			if err != nil {
+				return err
+			}
+			if outputDir != "" {
+				l.outputDir = outputDir
 			}
 
-			if v, _ := cmd.Flags().GetString(flagOutputFileName); v != "" {
-				l.outputFilename = v
+			outputFileName, err := cmd.Flags().GetString(flagOutputFileName)
+			if err != nil {
+				return err
+			}
+			if outputFileName != "" {
+				l.outputFilename = outputFileName
 			}
 
-			if v, err := cmd.Flags().GetBool(flagIncludeVendor); err == nil {
-				l.includeVendor = v
+			includeVendor, err := cmd.Flags().GetBool(flagIncludeVendor)
+			if err != nil {
+				return err
 			}
+			l.includeVendor = includeVendor
 
-			if v, err := cmd.Flags().GetBool(flagUseRelativePath); err == nil {
-				l.isUseRelativePath = v
+			useRelativePath, err := cmd.Flags().GetBool(flagUseRelativePath)
+			if err != nil {
+				return err
 			}
+			l.isUseRelativePath = useRelativePath
 
-			if v, err := cmd.Flags().GetBool(flagWriteOnlyPath); err == nil {
-				l.writeOnlyChartPath = v
+			writeOnlyPath, err := cmd.Flags().GetBool(flagWriteOnlyPath)
+			if err != nil {
+				return err
 			}
+			l.writeOnlyChartPath = writeOnlyPath
 
-			if v, err := cmd.Flags().GetBool(flagWriteOnlyName); err == nil {
-				l.writeOnlyChartName = v
+			writeOnlyName, err := cmd.Flags().GetBool(flagWriteOnlyName)
+			if err != nil {
+				return err
 			}
+			l.writeOnlyChartName = writeOnlyName
 
 			return l.list()
 		},
