@@ -19,7 +19,6 @@ Examples:
 
   flags:
       --exclude-dirs				strings		  List of (sub-)directories to exclude.
-      --include-vendor      bool   			Also consider charts in the vendor folder.
       --only-path           bool   			Only output the chart path.
       --output-dir		    	string   		If given, results will be written to file in this directory.
       --output-filename     string   		Filename to use for output. (default "results.txt")
@@ -31,7 +30,6 @@ type findDuplicatesChartsCmd struct {
 	folder,
 	outputDir,
 	outputFilename string
-	includeVendor,
 	writeOnlyChartPath,
 	isUseRelativePath,
 	failOnDuplicates bool
@@ -77,10 +75,6 @@ func newFindDuplicatesChartsCmd() *cobra.Command {
 				l.writeOnlyChartPath = v
 			}
 
-			if v, err := cmd.Flags().GetBool(flagIncludeVendor); err == nil {
-				l.includeVendor = v
-			}
-
 			if v, err := cmd.Flags().GetBool(flagUseRelativePath); err == nil {
 				l.isUseRelativePath = v
 			}
@@ -96,10 +90,6 @@ func newFindDuplicatesChartsCmd() *cobra.Command {
 }
 
 func (l *findDuplicatesChartsCmd) findDuplicates() error {
-	if !l.includeVendor {
-		l.excludeDirs = append(l.excludeDirs, excludeVendorPaths...)
-	}
-
 	results, err := charts.FindDuplicateChartsInFolder(l.folder, l.excludeDirs, l.isUseRelativePath)
 	if err != nil {
 		return err

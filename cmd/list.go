@@ -19,7 +19,6 @@ Examples:
 
   flags:
       --exclude-dirs        strings     List of (sub-)directories to exclude.
-      --include-vendor      bool        Also consider charts in the vendor folder.
       --only-path           bool        Only output the chart path.
       --output-dir          string      If given, results will be written to file in this directory.
       --output-filename     strin       Filename to use for output. (default "results.txt")
@@ -32,7 +31,6 @@ type listChartsCmd struct {
 	folder,
 	outputDir,
 	outputFilename string
-	includeVendor,
 	isUseRelativePath,
 	writeOnlyChartPath,
 	writeOnlyChartName bool
@@ -85,12 +83,6 @@ func newListChartsCmd() *cobra.Command {
 				l.outputFilename = outputFileName
 			}
 
-			includeVendor, err := cmd.Flags().GetBool(flagIncludeVendor)
-			if err != nil {
-				return err
-			}
-			l.includeVendor = includeVendor
-
 			useRelativePath, err := cmd.Flags().GetBool(flagUseRelativePath)
 			if err != nil {
 				return err
@@ -119,10 +111,6 @@ func newListChartsCmd() *cobra.Command {
 }
 
 func (l *listChartsCmd) list() error {
-	if !l.includeVendor {
-		l.excludeDirs = append(l.excludeDirs, excludeVendorPaths...)
-	}
-
 	results, err := charts.ListHelmChartsInFolder(l.folder, l.excludeDirs, l.isUseRelativePath)
 	if err != nil {
 		return err

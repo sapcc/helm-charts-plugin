@@ -19,7 +19,6 @@ Examples:
 
   flags:
     --exclude-dirs strings   List of (sub-)directories to exclude.
-    --include-vendor         Also consider charts in the vendor folder.
     --only-path              Only output the chart path.
     --output-dir string      If given, results will be written to file in this directory.
 
@@ -27,7 +26,6 @@ Examples:
 
   flags:
     --exclude-dirs strings   List of (sub-)directories to exclude.
-    --include-vendor         Also consider charts in the vendor folder.
     --only-path              Only output the chart path.
     --output-dir string      If given, results will be written to file in this directory.
     --remote string          The name of the git remote used to identify changes. (default "origin)"
@@ -37,5 +35,5 @@ Examples:
 
 ## RELEASE
 
-Releases are done via [goreleaser](https://github.com/goreleaser/goreleaser).  
+Releases are done via [goreleaser](https://github.com/goreleaser/goreleaser).
 Tag the new release, export the `GORELEASER_GITHUB_TOKEN` (needs `repo` scope) and run `make release`.

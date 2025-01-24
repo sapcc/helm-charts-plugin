@@ -20,7 +20,6 @@ Examples:
     --branch 			string			The name of the branch used to identify changes. (default "master")
     --commit 			string          The commit used to identify changes. (default "HEAD")
     --exclude-dirs 		strings   		List of (sub-)directories to exclude.
-    --include-vendor 	bool       		Also consider charts in the vendor folder.
     --only-path         bool     		Only output the chart path.
     --output-dir 		string      	If given, results will be written to file in this directory.
     --output-filename 	string			Filename to use for output. (default "results.txt")
@@ -33,7 +32,6 @@ type changedChartsCmd struct {
 
 	directory          string
 	excludeDirs        []string
-	includeVendor      bool
 	outputDir          string
 	outputFilename     string
 	writeOnlyChartPath bool
@@ -84,10 +82,6 @@ func newChangedChartsCmd() *cobra.Command {
 				c.writeOnlyChartName = v
 			}
 
-			if v, err := cmd.Flags().GetBool(flagIncludeVendor); err == nil {
-				c.includeVendor = v
-			}
-
 			if v, err := cmd.Flags().GetBool(flagUseRelativePath); err == nil {
 				c.isUseRelativePath = v
 			}
@@ -113,10 +107,6 @@ func newChangedChartsCmd() *cobra.Command {
 }
 
 func (c *changedChartsCmd) listChanged() error {
-	if !c.includeVendor {
-		c.excludeDirs = append(c.excludeDirs, excludeVendorPaths...)
-	}
-
 	results, err := charts.ListChangedHelmChartsInFolder(c.directory, c.excludeDirs, c.remote, c.branch, c.commit, c.isUseRelativePath)
 	if err != nil {
 		return err
