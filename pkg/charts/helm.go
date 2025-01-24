@@ -71,7 +71,8 @@ func ListChangedHelmChartsInFolder(rootDirectory string, excludeDirs []string, r
 		return nil, err
 	}
 
-	if err := git.fetch(); err != nil {
+	err = git.fetch()
+	if err != nil {
 		return nil, err
 	}
 

@@ -11,7 +11,8 @@ import (
 
 // EnsureFileExists ensures all directories and the file itself exist.
 func EnsureFileExists(absPath, filename string) (*os.File, error) {
-	if err := os.MkdirAll(absPath, os.ModeDir); err != nil {
+	err := os.MkdirAll(absPath, os.ModeDir)
+	if err != nil {
 		return nil, err
 	}
 
