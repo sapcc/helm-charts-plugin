@@ -1,4 +1,1 @@
-bin/**
-dist/**
-vendor/**
-pkg/helm/fixtures/*yaml
+helm-charts-plugin
