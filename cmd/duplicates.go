@@ -59,25 +59,35 @@ func newFindDuplicatesChartsCmd() *cobra.Command {
 			}
 			l.folder = folder
 
-			if v, _ := cmd.Flags().GetStringSlice(flagExcludeDirs); v != nil {
-				l.excludeDirs = v
+			excludeDirs, err := cmd.Flags().GetStringSlice(flagExcludeDirs)
+			if err != nil {
+				return err
 			}
+			l.excludeDirs = excludeDirs
 
-			if v, _ := cmd.Flags().GetString(flagOutputDir); v != "" {
-				l.outputDir = v
+			outputDir, err := cmd.Flags().GetString(flagOutputDir)
+			if err != nil {
+				return err
 			}
+			l.outputDir = outputDir
 
-			if v, _ := cmd.Flags().GetString(flagOutputFileName); v != "" {
-				l.outputFilename = v
+			outputFileName, err := cmd.Flags().GetString(flagOutputFileName)
+			if err != nil {
+				return err
 			}
+			l.outputFilename = outputFileName
 
-			if v, err := cmd.Flags().GetBool(flagWriteOnlyPath); err == nil {
-				l.writeOnlyChartPath = v
+			writeOnlyPath, err := cmd.Flags().GetBool(flagWriteOnlyPath)
+			if err != nil {
+				return err
 			}
+			l.writeOnlyChartPath = writeOnlyPath
 
-			if v, err := cmd.Flags().GetBool(flagUseRelativePath); err == nil {
-				l.isUseRelativePath = v
+			useRelativePath, err := cmd.Flags().GetBool(flagUseRelativePath)
+			if err != nil {
+				return err
 			}
+			l.isUseRelativePath = useRelativePath
 
 			return l.findDuplicates()
 		},

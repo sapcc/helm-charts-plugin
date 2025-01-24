@@ -66,33 +66,41 @@ func newChangedChartsCmd() *cobra.Command {
 			}
 			c.directory = d
 
-			if v, _ := cmd.Flags().GetStringSlice(flagExcludeDirs); v != nil {
-				c.excludeDirs = v
+			excludeDirs, err := cmd.Flags().GetStringSlice(flagExcludeDirs)
+			if err != nil {
+				return err
 			}
+			c.excludeDirs = excludeDirs
 
-			if v, _ := cmd.Flags().GetString(flagOutputDir); v != "" {
-				c.outputDir = v
+			outputDir, err := cmd.Flags().GetString(flagOutputDir)
+			if err != nil {
+				return err
 			}
+			c.outputDir = outputDir
 
-			if v, _ := cmd.Flags().GetString(flagOutputFileName); v != "" {
-				c.outputFilename = v
+			outputFileName, err := cmd.Flags().GetString(flagOutputFileName)
+			if err != nil {
+				return err
 			}
+			c.outputFilename = outputFileName
 
-			if v, err := cmd.Flags().GetBool(flagWriteOnlyName); err == nil {
-				c.writeOnlyChartName = v
+			writeOnlyName, err := cmd.Flags().GetBool(flagWriteOnlyName)
+			if err != nil {
+				return err
 			}
+			c.writeOnlyChartName = writeOnlyName
 
-			if v, err := cmd.Flags().GetBool(flagUseRelativePath); err == nil {
-				c.isUseRelativePath = v
+			useRelativePath, err := cmd.Flags().GetBool(flagUseRelativePath)
+			if err != nil {
+				return err
 			}
+			c.isUseRelativePath = useRelativePath
 
-			if v, err := cmd.Flags().GetBool(flagWriteOnlyName); err == nil {
-				c.writeOnlyChartName = v
+			v, err := cmd.Flags().GetBool(flagWriteOnlyPath)
+			if err != nil {
+				return err
 			}
-
-			if v, err := cmd.Flags().GetBool(flagWriteOnlyPath); err == nil {
-				c.writeOnlyChartPath = v
-			}
+			c.writeOnlyChartPath = v
 
 			return c.listChanged()
 		},
