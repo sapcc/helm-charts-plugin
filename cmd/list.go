@@ -129,8 +129,7 @@ func (l *listChartsCmd) list() error {
 	}
 
 	if len(results) == 0 {
-		fmt.Println("Not a single chart was found.")
-		return nil
+		return errors.New("Not a single chart was found")
 	}
 
 	fmt.Println(l.formatTableOutput(results))
