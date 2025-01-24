@@ -43,14 +43,19 @@ func (g *git) testGitInstalled() error {
 func (g *git) testGitRepository() error {
 	stdout, _, err := g.runGitCmd("rev-parse", "--is-inside-work-tree")
 	if err != nil {
+		return err
+	}
+
+	b, err := strconv.ParseBool(stdout)
+	if err != nil {
+		return err
+	}
+
+	if !b {
 		return errNoGitRepository
 	}
 
-	if b, err := strconv.ParseBool(stdout); err == nil && b {
-		return nil
-	}
-
-	return errNoGitRepository
+	return nil
 }
 
 func (g *git) fetch() error {
