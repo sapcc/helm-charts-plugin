@@ -31,7 +31,7 @@ type listChartsCmd struct {
 	folder,
 	outputDir,
 	outputFilename string
-	isUseRelativePath,
+	useRelativePath,
 	writeOnlyChartPath,
 	writeOnlyChartName bool
 }
@@ -87,7 +87,7 @@ func newListChartsCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			l.isUseRelativePath = useRelativePath
+			l.useRelativePath = useRelativePath
 
 			writeOnlyPath, err := cmd.Flags().GetBool(flagWriteOnlyPath)
 			if err != nil {
@@ -111,7 +111,7 @@ func newListChartsCmd() *cobra.Command {
 }
 
 func (l *listChartsCmd) list() error {
-	results, err := charts.ListHelmChartsInFolder(l.folder, l.excludeDirs, l.isUseRelativePath)
+	results, err := charts.ListHelmChartsInFolder(l.folder, l.excludeDirs, l.useRelativePath)
 	if err != nil {
 		return err
 	}
