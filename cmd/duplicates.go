@@ -19,7 +19,6 @@ Examples:
 
   flags:
       --exclude-dirs				strings		  List of (sub-)directories to exclude.
-      --include-vendor      bool   			Also consider charts in the vendor folder.
       --only-path           bool   			Only output the chart path.
       --output-dir		    	string   		If given, results will be written to file in this directory.
       --output-filename     string   		Filename to use for output. (default "results.txt")
@@ -31,7 +30,6 @@ type findDuplicatesChartsCmd struct {
 	folder,
 	outputDir,
 	outputFilename string
-	includeVendor,
 	writeOnlyChartPath,
 	isUseRelativePath,
 	failOnDuplicates bool
@@ -61,29 +59,35 @@ func newFindDuplicatesChartsCmd() *cobra.Command {
 			}
 			l.folder = folder
 
-			if v, _ := cmd.Flags().GetStringSlice(flagExcludeDirs); v != nil {
-				l.excludeDirs = v
+			excludeDirs, err := cmd.Flags().GetStringSlice(flagExcludeDirs)
+			if err != nil {
+				return err
 			}
+			l.excludeDirs = excludeDirs
 
-			if v, _ := cmd.Flags().GetString(flagOutputDir); v != "" {
-				l.outputDir = v
+			outputDir, err := cmd.Flags().GetString(flagOutputDir)
+			if err != nil {
+				return err
 			}
+			l.outputDir = outputDir
 
-			if v, _ := cmd.Flags().GetString(flagOutputFileName); v != "" {
-				l.outputFilename = v
+			outputFileName, err := cmd.Flags().GetString(flagOutputFileName)
+			if err != nil {
+				return err
 			}
+			l.outputFilename = outputFileName
 
-			if v, err := cmd.Flags().GetBool(flagWriteOnlyPath); err == nil {
-				l.writeOnlyChartPath = v
+			writeOnlyPath, err := cmd.Flags().GetBool(flagWriteOnlyPath)
+			if err != nil {
+				return err
 			}
+			l.writeOnlyChartPath = writeOnlyPath
 
-			if v, err := cmd.Flags().GetBool(flagIncludeVendor); err == nil {
-				l.includeVendor = v
+			useRelativePath, err := cmd.Flags().GetBool(flagUseRelativePath)
+			if err != nil {
+				return err
 			}
-
-			if v, err := cmd.Flags().GetBool(flagUseRelativePath); err == nil {
-				l.isUseRelativePath = v
-			}
+			l.isUseRelativePath = useRelativePath
 
 			return l.findDuplicates()
 		},
@@ -96,10 +100,6 @@ func newFindDuplicatesChartsCmd() *cobra.Command {
 }
 
 func (l *findDuplicatesChartsCmd) findDuplicates() error {
-	if !l.includeVendor {
-		l.excludeDirs = append(l.excludeDirs, excludeVendorPaths...)
-	}
-
 	results, err := charts.FindDuplicateChartsInFolder(l.folder, l.excludeDirs, l.isUseRelativePath)
 	if err != nil {
 		return err

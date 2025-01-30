@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"path/filepath"
 
@@ -18,7 +19,6 @@ Examples:
 
   flags:
       --exclude-dirs        strings     List of (sub-)directories to exclude.
-      --include-vendor      bool        Also consider charts in the vendor folder.
       --only-path           bool        Only output the chart path.
       --output-dir          string      If given, results will be written to file in this directory.
       --output-filename     strin       Filename to use for output. (default "results.txt")
@@ -31,8 +31,7 @@ type listChartsCmd struct {
 	folder,
 	outputDir,
 	outputFilename string
-	includeVendor,
-	isUseRelativePath,
+	useRelativePath,
 	writeOnlyChartPath,
 	writeOnlyChartName bool
 }
@@ -60,33 +59,47 @@ func newListChartsCmd() *cobra.Command {
 			}
 			l.folder = folder
 
-			if v, _ := cmd.Flags().GetStringSlice(flagExcludeDirs); v != nil {
-				l.excludeDirs = v
+			excludeDirs, err := cmd.Flags().GetStringSlice(flagExcludeDirs)
+			if err != nil {
+				return err
+			}
+			if excludeDirs != nil {
+				l.excludeDirs = excludeDirs
 			}
 
-			if v, _ := cmd.Flags().GetString(flagOutputDir); v != "" {
-				l.outputDir = v
+			outputDir, err := cmd.Flags().GetString(flagOutputDir)
+			if err != nil {
+				return err
+			}
+			if outputDir != "" {
+				l.outputDir = outputDir
 			}
 
-			if v, _ := cmd.Flags().GetString(flagOutputFileName); v != "" {
-				l.outputFilename = v
+			outputFileName, err := cmd.Flags().GetString(flagOutputFileName)
+			if err != nil {
+				return err
+			}
+			if outputFileName != "" {
+				l.outputFilename = outputFileName
 			}
 
-			if v, err := cmd.Flags().GetBool(flagIncludeVendor); err == nil {
-				l.includeVendor = v
+			useRelativePath, err := cmd.Flags().GetBool(flagUseRelativePath)
+			if err != nil {
+				return err
 			}
+			l.useRelativePath = useRelativePath
 
-			if v, err := cmd.Flags().GetBool(flagUseRelativePath); err == nil {
-				l.isUseRelativePath = v
+			writeOnlyPath, err := cmd.Flags().GetBool(flagWriteOnlyPath)
+			if err != nil {
+				return err
 			}
+			l.writeOnlyChartPath = writeOnlyPath
 
-			if v, err := cmd.Flags().GetBool(flagWriteOnlyPath); err == nil {
-				l.writeOnlyChartPath = v
+			writeOnlyName, err := cmd.Flags().GetBool(flagWriteOnlyName)
+			if err != nil {
+				return err
 			}
-
-			if v, err := cmd.Flags().GetBool(flagWriteOnlyName); err == nil {
-				l.writeOnlyChartName = v
-			}
+			l.writeOnlyChartName = writeOnlyName
 
 			return l.list()
 		},
@@ -98,18 +111,13 @@ func newListChartsCmd() *cobra.Command {
 }
 
 func (l *listChartsCmd) list() error {
-	if !l.includeVendor {
-		l.excludeDirs = append(l.excludeDirs, excludeVendorPaths...)
-	}
-
-	results, err := charts.ListHelmChartsInFolder(l.folder, l.excludeDirs, l.isUseRelativePath)
+	results, err := charts.ListHelmChartsInFolder(l.folder, l.excludeDirs, l.useRelativePath)
 	if err != nil {
 		return err
 	}
 
 	if len(results) == 0 {
-		fmt.Println("Not a single chart was found.")
-		return nil
+		return errors.New("Not a single chart was found")
 	}
 
 	fmt.Println(l.formatTableOutput(results))

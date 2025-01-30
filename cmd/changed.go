@@ -20,7 +20,6 @@ Examples:
     --branch 			string			The name of the branch used to identify changes. (default "master")
     --commit 			string          The commit used to identify changes. (default "HEAD")
     --exclude-dirs 		strings   		List of (sub-)directories to exclude.
-    --include-vendor 	bool       		Also consider charts in the vendor folder.
     --only-path         bool     		Only output the chart path.
     --output-dir 		string      	If given, results will be written to file in this directory.
     --output-filename 	string			Filename to use for output. (default "results.txt")
@@ -33,7 +32,6 @@ type changedChartsCmd struct {
 
 	directory          string
 	excludeDirs        []string
-	includeVendor      bool
 	outputDir          string
 	outputFilename     string
 	writeOnlyChartPath bool
@@ -68,37 +66,41 @@ func newChangedChartsCmd() *cobra.Command {
 			}
 			c.directory = d
 
-			if v, _ := cmd.Flags().GetStringSlice(flagExcludeDirs); v != nil {
-				c.excludeDirs = v
+			excludeDirs, err := cmd.Flags().GetStringSlice(flagExcludeDirs)
+			if err != nil {
+				return err
 			}
+			c.excludeDirs = excludeDirs
 
-			if v, _ := cmd.Flags().GetString(flagOutputDir); v != "" {
-				c.outputDir = v
+			outputDir, err := cmd.Flags().GetString(flagOutputDir)
+			if err != nil {
+				return err
 			}
+			c.outputDir = outputDir
 
-			if v, _ := cmd.Flags().GetString(flagOutputFileName); v != "" {
-				c.outputFilename = v
+			outputFileName, err := cmd.Flags().GetString(flagOutputFileName)
+			if err != nil {
+				return err
 			}
+			c.outputFilename = outputFileName
 
-			if v, err := cmd.Flags().GetBool(flagWriteOnlyName); err == nil {
-				c.writeOnlyChartName = v
+			writeOnlyName, err := cmd.Flags().GetBool(flagWriteOnlyName)
+			if err != nil {
+				return err
 			}
+			c.writeOnlyChartName = writeOnlyName
 
-			if v, err := cmd.Flags().GetBool(flagIncludeVendor); err == nil {
-				c.includeVendor = v
+			useRelativePath, err := cmd.Flags().GetBool(flagUseRelativePath)
+			if err != nil {
+				return err
 			}
+			c.isUseRelativePath = useRelativePath
 
-			if v, err := cmd.Flags().GetBool(flagUseRelativePath); err == nil {
-				c.isUseRelativePath = v
+			v, err := cmd.Flags().GetBool(flagWriteOnlyPath)
+			if err != nil {
+				return err
 			}
-
-			if v, err := cmd.Flags().GetBool(flagWriteOnlyName); err == nil {
-				c.writeOnlyChartName = v
-			}
-
-			if v, err := cmd.Flags().GetBool(flagWriteOnlyPath); err == nil {
-				c.writeOnlyChartPath = v
-			}
+			c.writeOnlyChartPath = v
 
 			return c.listChanged()
 		},
@@ -113,10 +115,6 @@ func newChangedChartsCmd() *cobra.Command {
 }
 
 func (c *changedChartsCmd) listChanged() error {
-	if !c.includeVendor {
-		c.excludeDirs = append(c.excludeDirs, excludeVendorPaths...)
-	}
-
 	results, err := charts.ListChangedHelmChartsInFolder(c.directory, c.excludeDirs, c.remote, c.branch, c.commit, c.isUseRelativePath)
 	if err != nil {
 		return err

@@ -5,13 +5,15 @@ import (
 	"os"
 	"path"
 
+	"github.com/sapcc/go-bits/osext"
 	helm_env "k8s.io/helm/pkg/helm/environment"
 	"k8s.io/helm/pkg/helm/helmpath"
 )
 
 // EnsureFileExists ensures all directories and the file itself exist.
 func EnsureFileExists(absPath, filename string) (*os.File, error) {
-	if err := os.MkdirAll(absPath, os.ModeDir); err != nil {
+	err := os.MkdirAll(absPath, os.ModeDir)
+	if err != nil {
 		return nil, err
 	}
 
@@ -27,9 +29,5 @@ func EnsureFileExists(absPath, filename string) (*os.File, error) {
 
 // GetHelmHome returns the HELM_HOME path.
 func GetHelmHome() helmpath.Home {
-	home := helm_env.DefaultHelmHome
-	if h := os.Getenv("HELM_HOME"); h != "" {
-		home = h
-	}
-	return helmpath.Home(home)
+	return helmpath.Home(osext.GetenvOrDefault("HELM_HOME", helm_env.DefaultHelmHome))
 }
