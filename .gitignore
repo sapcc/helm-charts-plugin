@@ -1,1 +1,2 @@
-helm-charts-plugin
+/helm-charts-plugin
+/dist/
