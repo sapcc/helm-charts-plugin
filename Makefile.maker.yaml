@@ -1,0 +1,25 @@
+# Configuration file for <https://github.com/sapcc/go-makefile-maker>
+
+metadata:
+  url: https://github.com/sapcc/helm-charts-plugin
+
+binaries:
+  - name:        helm-charts-plugin
+    fromPackage: .
+    installTo:   bin/
+
+golang:
+  setGoModVersion: true
+
+golangciLint:
+  createConfig: true
+
+githubWorkflow:
+  ci:
+    enabled: true
+
+renovate:
+  enabled: true
+  assignees:
+    - SuperSandro2000
+    - Nuckal777

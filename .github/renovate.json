@@ -8,9 +8,12 @@
   ],
   "assignees": [
     "SuperSandro2000",
-    "Nukal777"
+    "Nuckal777"
   ],
   "commitMessageAction": "Renovate: Update",
+  "constraints": {
+    "go": "1.23"
+  },
   "dependencyDashboardOSVVulnerabilitySummary": "all",
   "osvVulnerabilityAlerts": true,
   "postUpdateOptions": [
@@ -18,6 +21,12 @@
     "gomodUpdateImportPaths"
   ],
   "packageRules": [
+    {
+      "matchPackageNames": [
+        "golang"
+      ],
+      "allowedVersions": "1.23.x"
+    },
     {
       "matchPackageNames": [
         "/^github\\.com\\/sapcc\\/.*/"
@@ -31,6 +40,12 @@
         "/.*/"
       ],
       "groupName": "External dependencies"
+    },
+    {
+      "matchPackageNames": [
+        "/^k8s.io\\//"
+      ],
+      "allowedVersions": "0.28.x"
     }
   ],
   "prHourlyLimit": 0,

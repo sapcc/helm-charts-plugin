@@ -1,13 +1,16 @@
+// Copyright 2025 SAP SE
+// SPDX-License-Identifier: Apache-2.0
+
 package cmd
 
 import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/gosuri/uitable"
-	"github.com/sapcc/helm-charts-plugin/pkg/charts"
 	"github.com/spf13/cobra"
 	helm_env "k8s.io/helm/pkg/helm/environment"
+
+	"github.com/sapcc/helm-charts-plugin/pkg/charts"
 )
 
 var changedChartsLongUsage = `
@@ -125,43 +128,24 @@ func (c *changedChartsCmd) listChanged() error {
 		return nil
 	}
 
-	fmt.Println(c.formatTableOutput(results))
+	header := fmt.Sprintf("Compared to %s/%s:%s following charts were changed:", c.remote, c.branch, c.commit)
+	table := FormatTableOutput(results, header, c.writeOnlyChartPath, c.writeOnlyChartName)
+	fmt.Println(table)
 
 	if c.outputDir != "" {
-		return c.writeToFile(results)
+		return c.writeToFile(table)
 	}
 
 	return nil
 }
 
-func (c *changedChartsCmd) formatTableOutput(results []*charts.HelmChart) string {
-	table := uitable.New()
-	table.MaxColWidth = 200
-
-	if !c.writeOnlyChartPath && !c.writeOnlyChartName {
-		table.AddRow(fmt.Sprintf("Compared to %s/%s:%s following charts were changed:", c.remote, c.branch, c.commit))
-		table.AddRow("NAME", "VERSION", "PATH")
-	}
-
-	for _, r := range results {
-		if c.writeOnlyChartPath {
-			table.AddRow(r.Path)
-		} else if c.writeOnlyChartName {
-			table.AddRow(r.Name)
-		} else {
-			table.AddRow(r.Name, r.Version, r.Path)
-		}
-	}
-	return table.String()
-}
-
-func (c *changedChartsCmd) writeToFile(results []*charts.HelmChart) error {
+func (c *changedChartsCmd) writeToFile(table string) error {
 	f, err := charts.EnsureFileExists(c.outputDir, c.outputFilename)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
 
-	_, err = f.Write([]byte(c.formatTableOutput(results)))
+	_, err = f.Write([]byte(table))
 	return err
 }
