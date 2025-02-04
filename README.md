@@ -1,7 +1,7 @@
 Helm charts plugin
 ------------------
 
-Plugin to manage Helm charts in a directory/git repository.
+Helm plugin to manage multiple charts in a directory layout or git repository.
 
 ## Install
 
