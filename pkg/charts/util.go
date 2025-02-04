@@ -1,3 +1,6 @@
+// Copyright 2025 SAP SE
+// SPDX-License-Identifier: Apache-2.0
+
 package charts
 
 import (
@@ -24,7 +27,8 @@ func EnsureFileExists(absPath, filename string) (*os.File, error) {
 	if err != nil {
 		return nil, err
 	}
-	return f, f.Truncate(0)
+	err = f.Truncate(0)
+	return f, err
 }
 
 // GetHelmHome returns the HELM_HOME path.

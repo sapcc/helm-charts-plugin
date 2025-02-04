@@ -1,3 +1,6 @@
+// Copyright 2025 SAP SE
+// SPDX-License-Identifier: Apache-2.0
+
 package cmd
 
 import (
@@ -6,9 +9,10 @@ import (
 	"path/filepath"
 
 	"github.com/gosuri/uitable"
-	"github.com/sapcc/helm-charts-plugin/pkg/charts"
 	"github.com/spf13/cobra"
 	helm_env "k8s.io/helm/pkg/helm/environment"
+
+	"github.com/sapcc/helm-charts-plugin/pkg/charts"
 )
 
 var findDuplicatesChartsLongUsage = `

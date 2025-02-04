@@ -1,3 +1,6 @@
+// Copyright 2025 SAP SE
+// SPDX-License-Identifier: Apache-2.0
+
 package cmd
 
 import (
@@ -6,9 +9,10 @@ import (
 	"path/filepath"
 
 	"github.com/gosuri/uitable"
-	"github.com/sapcc/helm-charts-plugin/pkg/charts"
 	"github.com/spf13/cobra"
 	helm_env "k8s.io/helm/pkg/helm/environment"
+
+	"github.com/sapcc/helm-charts-plugin/pkg/charts"
 )
 
 var listChartsLongUsage = `
@@ -117,46 +121,48 @@ func (l *listChartsCmd) list() error {
 	}
 
 	if len(results) == 0 {
-		return errors.New("Not a single chart was found")
+		return errors.New("not a single chart was found")
 	}
 
-	fmt.Println(l.formatTableOutput(results))
+	table := FormatTableOutput(results, "The following charts were found:", l.writeOnlyChartPath, l.writeOnlyChartName)
+	fmt.Println(table)
 
 	if l.outputDir != "" {
-		return l.writeToFile(results)
+		return l.writeToFile(table)
 	}
 
 	return nil
 }
 
-func (l *listChartsCmd) formatTableOutput(results []*charts.HelmChart) string {
-	table := uitable.New()
-	table.MaxColWidth = 200
-
-	if !l.writeOnlyChartPath && !l.writeOnlyChartName {
-		table.AddRow("The following charts were found:")
-		table.AddRow("NAME", "VERSION", "PATH")
-	}
-
-	for _, r := range results {
-		if l.writeOnlyChartPath {
-			table.AddRow(r.Path)
-		} else if l.writeOnlyChartName {
-			table.AddRow(r.Name)
-		} else {
-			table.AddRow(r.Name, r.Version, r.Path)
-		}
-	}
-	return table.String()
-}
-
-func (l *listChartsCmd) writeToFile(results []*charts.HelmChart) error {
+func (l *listChartsCmd) writeToFile(table string) error {
 	f, err := charts.EnsureFileExists(l.outputDir, l.outputFilename)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
 
-	_, err = f.Write([]byte(l.formatTableOutput(results)))
+	_, err = f.Write([]byte(table))
 	return err
+}
+
+func FormatTableOutput(results []*charts.HelmChart, header string, writeOnlyChartPath, writeOnlyChartName bool) string {
+	table := uitable.New()
+	table.MaxColWidth = 200
+
+	if !writeOnlyChartPath && !writeOnlyChartName {
+		table.AddRow(header)
+		table.AddRow("NAME", "VERSION", "PATH")
+	}
+
+	for _, r := range results {
+		switch {
+		case writeOnlyChartPath:
+			table.AddRow(r.Path)
+		case writeOnlyChartName:
+			table.AddRow(r.Name)
+		default:
+			table.AddRow(r.Name, r.Version, r.Path)
+		}
+	}
+	return table.String()
 }
