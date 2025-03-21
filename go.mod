@@ -5,7 +5,7 @@ go 1.24
 require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/gosuri/uitable v0.0.4
-	github.com/sapcc/go-bits v0.0.0-20250307173044-634e8ce82c05
+	github.com/sapcc/go-bits v0.0.0-20250320011137-5ec7b29ab444
 	github.com/spf13/cobra v1.9.1
 	k8s.io/helm v2.17.0+incompatible
 )
@@ -25,7 +25,7 @@ require (
 	github.com/spf13/pflag v1.0.6 // indirect
 	github.com/stretchr/testify v1.10.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
-	google.golang.org/protobuf v1.36.1 // indirect
+	google.golang.org/protobuf v1.36.5 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	k8s.io/apimachinery v0.32.1 // indirect
 	k8s.io/client-go v0.32.1 // indirect
