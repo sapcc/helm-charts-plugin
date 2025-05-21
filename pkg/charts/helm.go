@@ -97,12 +97,12 @@ func ListChangedHelmChartsInFolder(rootDirectory string, excludeDirs []string, r
 
 	var res []*HelmChart
 	for _, dir := range changedDirs {
-		path, err := getChartRootDirectory(rootDirectory, dir, excludeDirs)
+		chartPath, err := getChartRootDirectory(rootDirectory, dir, excludeDirs)
 		if err != nil {
 			continue
 		}
 
-		c, err := loadChartMetadata(path)
+		c, err := loadChartMetadata(chartPath)
 		if err != nil {
 			fmt.Printf("failed to load chart metadata: %s\n", err.Error())
 			continue
@@ -175,16 +175,16 @@ func isValidChartDirectory(absPath string, excludeDirs []string) bool {
 	return err == nil
 }
 
-func getChartRootDirectory(root, path string, excludedDirs []string) (string, error) {
-	if path == root {
+func getChartRootDirectory(root, chartPath string, excludedDirs []string) (string, error) {
+	if chartPath == root {
 		return "", errors.New("no more parent directories")
 	}
 
-	if isValidChartDirectory(path, excludedDirs) {
-		return path, nil
+	if isValidChartDirectory(chartPath, excludedDirs) {
+		return chartPath, nil
 	}
 
-	return getChartRootDirectory(root, filepath.Dir(path), excludedDirs)
+	return getChartRootDirectory(root, filepath.Dir(chartPath), excludedDirs)
 }
 
 // containsCharts is used to avoid duplicates in a list of HelmCharts.
