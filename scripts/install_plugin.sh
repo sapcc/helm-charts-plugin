@@ -1,5 +1,9 @@
 #!/bin/sh -e
 
+# SPDX-FileCopyrightText: 2025 SAP SE or an SAP affiliate company
+#
+# SPDX-License-Identifier: Apache-2.0
+
 # Copied w/ love from the excellent hypnoglow/helm-s3
 
 if [ -n "${HELM_OUTDATED_DEPENDENCIES_PLUGIN_NO_INSTALL_HOOK}" ]; then
