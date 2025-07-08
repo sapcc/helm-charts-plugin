@@ -81,8 +81,8 @@ func (g *git) getChangedDirs(remote, commit string) ([]string, error) {
 	}
 
 	var changedDirs []string
-	lines := strings.Split(stdOut, "\n")
-	for _, l := range lines {
+	lines := strings.SplitSeq(stdOut, "\n")
+	for l := range lines {
 		if p := l; p != "" {
 			changedDirs = append(changedDirs, g.pathWithDirectory(p))
 		}
