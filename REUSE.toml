@@ -1,7 +1,8 @@
-# SPDX-FileCopyrightText: SAP SE
+# SPDX-FileCopyrightText: SAP SE or an SAP affiliate company
 # SPDX-License-Identifier: Apache-2.0
-
 version = 1
+SPDX-PackageName = "helm-charts-plugin"
+SPDX-PackageDownloadLocation = "https://github.com/sapcc/helm-charts-plugin"
 
 [[annotations]]
 path = [
@@ -13,6 +14,7 @@ path = [
   "go.mod",
   "go.sum",
   "Makefile.maker.yaml",
+  "vendor/modules.txt",
 ]
-SPDX-FileCopyrightText = "SAP SE"
+SPDX-FileCopyrightText = "SAP SE or an SAP affiliate company"
 SPDX-License-Identifier = "Apache-2.0"
