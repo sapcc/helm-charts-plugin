@@ -1,4 +1,4 @@
-// Copyright 2025 SAP SE
+// SPDX-FileCopyrightText: 2025 SAP SE or an SAP affiliate company
 // SPDX-License-Identifier: Apache-2.0
 
 package charts
@@ -81,8 +81,8 @@ func (g *git) getChangedDirs(remote, commit string) ([]string, error) {
 	}
 
 	var changedDirs []string
-	lines := strings.Split(stdOut, "\n")
-	for _, l := range lines {
+	lines := strings.SplitSeq(stdOut, "\n")
+	for l := range lines {
 		if p := l; p != "" {
 			changedDirs = append(changedDirs, g.pathWithDirectory(p))
 		}

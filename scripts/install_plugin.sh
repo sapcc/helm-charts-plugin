@@ -1,5 +1,9 @@
 #!/bin/sh -e
 
+# SPDX-FileCopyrightText: 2025 SAP SE or an SAP affiliate company
+#
+# SPDX-License-Identifier: Apache-2.0
+
 # Copied w/ love from the excellent hypnoglow/helm-s3
 
 if [ -n "${HELM_OUTDATED_DEPENDENCIES_PLUGIN_NO_INSTALL_HOOK}" ]; then
@@ -7,7 +11,7 @@ if [ -n "${HELM_OUTDATED_DEPENDENCIES_PLUGIN_NO_INSTALL_HOOK}" ]; then
     exit 0
 fi
 
-version="$(cat plugin.yaml | grep "version" | cut -d '"' -f 2)"
+version="$(grep "version" plugin.yaml | cut -d '"' -f 2)"
 echo "Downloading and installing helm-charts-plugin v${version} ..."
 
 url=""
@@ -19,13 +23,13 @@ else
     url="https://github.com/sapcc/helm-charts-plugin/releases/download/v${version}/helm-charts-plugin_${version}_windows_amd64.tar.gz"
 fi
 
-echo $url
+echo "$url"
 
 mkdir -p "bin"
 mkdir -p "releases/v${version}"
 
 # Download with curl if possible.
-if [ -x "$(which curl 2>/dev/null)" ]; then
+if [ -x "$(command -v curl 2>/dev/null)" ]; then
     curl -sSL "${url}" -o "releases/v${version}.tar.gz"
 else
     wget -q "${url}" -O "releases/v${version}.tar.gz"
