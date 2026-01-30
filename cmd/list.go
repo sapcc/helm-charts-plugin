@@ -25,7 +25,7 @@ Examples:
       --exclude-dirs        strings     List of (sub-)directories to exclude.
       --only-path           bool        Only output the chart path.
       --output-dir          string      If given, results will be written to file in this directory.
-      --output-filename     strin       Filename to use for output. (default "results.txt")
+      --output-filename     string      Filename to use for output. (default "results.txt")
 `
 
 type listChartsCmd struct {
