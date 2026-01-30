@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/gosuri/uitable v0.0.4
 	github.com/sapcc/go-bits v0.0.0-20260130093945-5dd497f4cf92
-	github.com/spf13/cobra v1.10.1
+	github.com/spf13/cobra v1.10.2
 	k8s.io/helm v2.17.0+incompatible
 )
 
