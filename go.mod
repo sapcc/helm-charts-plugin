@@ -1,11 +1,11 @@
 module github.com/sapcc/helm-charts-plugin
 
-go 1.25
+go 1.26
 
 require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/gosuri/uitable v0.0.4
-	github.com/sapcc/go-bits v0.0.0-20260219121224-1c2b75dbf776
+	github.com/sapcc/go-bits v0.0.0-20260226170120-c20f89b66c3c
 	github.com/spf13/cobra v1.10.2
 	k8s.io/helm v2.17.0+incompatible
 )
