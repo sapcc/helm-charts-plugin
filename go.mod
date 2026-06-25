@@ -5,7 +5,7 @@ go 1.26
 require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/gosuri/uitable v0.0.4
-	github.com/sapcc/go-bits v0.0.0-20260618170412-b440edfb4e25
+	github.com/sapcc/go-bits v0.0.0-20260623114633-b9734b46a368
 	github.com/spf13/cobra v1.10.2
 	k8s.io/helm v2.17.0+incompatible
 )
